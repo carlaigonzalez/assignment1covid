@@ -1,0 +1,1601 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "3cdeadd3",
+   "metadata": {},
+   "source": [
+    "## Assignment #1 Data collection and curation\n",
+    "\n",
+    "#### Below we are going to analyze covid vaccination data from a survey created in google forms: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "1c12d657",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "df = pd.read_csv(\"covid survey results.csv\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d09f0e5d",
+   "metadata": {},
+   "source": [
+    "#### First step: Familiarize with data set\n",
+    "Looking at the head and tail of a data set can be helpful to know  what type of date we are analyzing."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "97a0d6c1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "      <th>Gender</th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Vaccineted?</th>\n",
+       "      <th>if yes, which?</th>\n",
+       "      <th>Side effects?</th>\n",
+       "      <th>which ones: (Select all that apply)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1</td>\n",
+       "      <td>m</td>\n",
+       "      <td>24</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>2</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>3</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>4</td>\n",
+       "      <td>f</td>\n",
+       "      <td>49</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   respondent Gender Age Vaccineted? if yes, which? Side effects?  \\\n",
+       "0           0      f  20        yes         moderna           yes   \n",
+       "1           1      m  24        yes          pfizer           yes   \n",
+       "2           2      f  20        yes        moderna             no   \n",
+       "3           3      f  20        yes         moderna           yes   \n",
+       "4           4      f  49        yes         moderna           yes   \n",
+       "\n",
+       "  which ones: (Select all that apply)  \n",
+       "0           headeche, fever, arm pain  \n",
+       "1                  headache, arm pain  \n",
+       "2                                none  \n",
+       "3                           arm pain   \n",
+       "4                  headache, arm pain  "
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "8acb1d4f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "      <th>Gender</th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Vaccineted?</th>\n",
+       "      <th>if yes, which?</th>\n",
+       "      <th>Side effects?</th>\n",
+       "      <th>which ones: (Select all that apply)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>96</th>\n",
+       "      <td>96</td>\n",
+       "      <td>m</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>J&amp;J</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>97</td>\n",
+       "      <td>m</td>\n",
+       "      <td>22</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>98</th>\n",
+       "      <td>98</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>99</th>\n",
+       "      <td>99</td>\n",
+       "      <td>f</td>\n",
+       "      <td>19</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>100</th>\n",
+       "      <td>100</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     respondent Gender Age Vaccineted? if yes, which? Side effects?  \\\n",
+       "96           96      m  21        yes             J&J            no   \n",
+       "97           97      m  22        yes         moderna           yes   \n",
+       "98           98      m  20        yes          pfizer           yes   \n",
+       "99           99      f  19        yes          pfizer            no   \n",
+       "100         100      f  21        yes          pfizer           yes   \n",
+       "\n",
+       "    which ones: (Select all that apply)  \n",
+       "96                                 none  \n",
+       "97                            arm pain   \n",
+       "98                            tiredness  \n",
+       "99                                 none  \n",
+       "100                  headache, arm pain  "
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.tail()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2a1ed1f5",
+   "metadata": {},
+   "source": [
+    "Another important step is knowing the lenght of the dataset, which can be easily found with the next function."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "8717521e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "101\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(len(df))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "8bc27221",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'arm pain '"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[\"which ones: (Select all that apply)\"][85]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cb65dd20",
+   "metadata": {},
+   "source": [
+    "In the next lines we are checking which types of data we are analyzig, which can be helpful when trying to process and clean it:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "a84a7af1",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'pandas.core.frame.DataFrame'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(type(df))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "534241ad",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'pandas.core.series.Series'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(type(df[\"Age\"]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "e1eb4ac7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'moderna'"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[\"if yes, which?\"][75]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "f94cb392",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "respondent <class 'numpy.int64'>\n",
+      "Gender <class 'str'>\n",
+      "Age <class 'str'>\n",
+      "Vaccineted? <class 'str'>\n",
+      "if yes, which? <class 'str'>\n",
+      "Side effects? <class 'str'>\n",
+      "which ones: (Select all that apply) <class 'str'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "for col in df.columns:\n",
+    "    print(col, type(df[col][0]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "0dd397be",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>101.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>50.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>29.300171</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>25.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>50.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>75.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>100.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "       respondent\n",
+       "count  101.000000\n",
+       "mean    50.000000\n",
+       "std     29.300171\n",
+       "min      0.000000\n",
+       "25%     25.000000\n",
+       "50%     50.000000\n",
+       "75%     75.000000\n",
+       "max    100.000000"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "id": "044b0c62",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "20    32\n",
+       "21    20\n",
+       "19    11\n",
+       "22    10\n",
+       "18     8\n",
+       "17     4\n",
+       "23     3\n",
+       "25     2\n",
+       "24     2\n",
+       "65     1\n",
+       "47     1\n",
+       "45     1\n",
+       "27     1\n",
+       "15     1\n",
+       "28     1\n",
+       "50     1\n",
+       "49     1\n",
+       "29     1\n",
+       "Name: Age, dtype: int64"
+      ]
+     },
+     "execution_count": 47,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[\"Age\"].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3cd1ffcf",
+   "metadata": {},
+   "source": [
+    "### Clean\n",
+    "\n",
+    "While looking at the data, I noticied someone added the word \"years\" in the age entry box, for all the entries to be equal we are going to change that"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "b546bfbf",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'45 years'"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[\"Age\"][55]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "id": "dc751d86",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'45'"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.loc[55, \"Age\"] = \"45\"\n",
+    "df[\"Age\"][55]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b616f2e7",
+   "metadata": {},
+   "source": [
+    "### Histogram\n",
+    "\n",
+    "This next graph presents the distribution of ages in the survey.\n",
+    "For the graph to be made is important to first convert string into interger:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "id": "cb6070e9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df[\"Age\"] = df[\"Age\"].astype(int)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "id": "598c49e7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Text(0, 0.5, 'Number of Observations')"
+      ]
+     },
+     "execution_count": 45,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "df.hist(column= \"Age\")\n",
+    "plt.ylabel(\"Number of Observations\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3105bc17",
+   "metadata": {},
+   "source": [
+    "When creating another histogram with the distibution of the different types of vaccines, we noticed moderna vaccine doubles, apparently the user added a space at the end of the word, so lets fix it:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "id": "20b838c0",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "moderna        35\n",
+       "pfizer         30\n",
+       "J&J            19\n",
+       "moderna         1\n",
+       "AstraZeneca     1\n",
+       "Name: if yes, which?, dtype: int64"
+      ]
+     },
+     "execution_count": 50,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[\"if yes, which?\"].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "id": "29804453",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "      <th>Gender</th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Vaccineted?</th>\n",
+       "      <th>if yes, which?</th>\n",
+       "      <th>Side effects?</th>\n",
+       "      <th>which ones: (Select all that apply)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>2</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   respondent Gender  Age Vaccineted? if yes, which? Side effects?  \\\n",
+       "2           2      f   20        yes        moderna             no   \n",
+       "\n",
+       "  which ones: (Select all that apply)  \n",
+       "2                                none  "
+      ]
+     },
+     "execution_count": 55,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[df[\"if yes, which?\"]== \"moderna \"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "id": "0aa7e9f8",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "      <th>Gender</th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Vaccineted?</th>\n",
+       "      <th>if yes, which?</th>\n",
+       "      <th>Side effects?</th>\n",
+       "      <th>which ones: (Select all that apply)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "Empty DataFrame\n",
+       "Columns: [respondent, Gender, Age, Vaccineted?, if yes, which?, Side effects?, which ones: (Select all that apply)]\n",
+       "Index: []"
+      ]
+     },
+     "execution_count": 57,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.loc[df[\"if yes, which?\"]==\"moderna \", \"if yes, which?\"] = \"moderna\"\n",
+    "df[df[\"if yes, which?\"]== \"moderna \"]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1841b3be",
+   "metadata": {},
+   "source": [
+    "Now that the problem is fixed, here is the histogram:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "id": "163b4fdb",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Text(0, 0.5, 'Number of Observations')"
+      ]
+     },
+     "execution_count": 58,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 1440x720 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "type_counts = df[\"if yes, which?\"].value_counts()\n",
+    "plt.rcParams[\"figure.figsize\"] = (20,10)\n",
+    "type_counts.plot.bar()\n",
+    "plt.xlabel(\"Covid vaccine type\")\n",
+    "plt.ylabel(\"Number of Observations\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d4284d3f",
+   "metadata": {},
+   "source": [
+    "### Now lets compare different vaccines and its effect on people:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "id": "974d39cc",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "none                                            30\n",
+       "arm pain                                        16\n",
+       "headache, arm pain                               9\n",
+       "headeche, fever, arm pain                        8\n",
+       "arm pain, tiredness                              6\n",
+       "headache                                         5\n",
+       "headeche, fever, arm pain, tiredness             3\n",
+       "fever, arm pain                                  3\n",
+       "tiredness                                        3\n",
+       "headeche, fever, arm pain, tiredness, nausea     1\n",
+       "fever, chills                                    1\n",
+       "fever, tiredness                                 1\n",
+       "Name: which ones: (Select all that apply), dtype: int64"
+      ]
+     },
+     "execution_count": 59,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[\"which ones: (Select all that apply)\"].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "id": "865fb2d5",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "      <th>Gender</th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Vaccineted?</th>\n",
+       "      <th>if yes, which?</th>\n",
+       "      <th>Side effects?</th>\n",
+       "      <th>which ones: (Select all that apply)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1</td>\n",
+       "      <td>m</td>\n",
+       "      <td>24</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>3</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>4</td>\n",
+       "      <td>f</td>\n",
+       "      <td>49</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>5</td>\n",
+       "      <td>m</td>\n",
+       "      <td>17</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>93</th>\n",
+       "      <td>93</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>no</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>95</th>\n",
+       "      <td>95</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>no</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>97</td>\n",
+       "      <td>m</td>\n",
+       "      <td>22</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>98</th>\n",
+       "      <td>98</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>100</th>\n",
+       "      <td>100</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>pfizer</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>71 rows × 7 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     respondent Gender  Age Vaccineted? if yes, which? Side effects?  \\\n",
+       "0             0      f   20        yes         moderna           yes   \n",
+       "1             1      m   24        yes          pfizer           yes   \n",
+       "3             3      f   20        yes         moderna           yes   \n",
+       "4             4      f   49        yes         moderna           yes   \n",
+       "5             5      m   17        yes          pfizer           yes   \n",
+       "..          ...    ...  ...         ...            ...           ...   \n",
+       "93           93      f   21          no            NaN           NaN   \n",
+       "95           95      f   20          no            NaN           NaN   \n",
+       "97           97      m   22        yes         moderna           yes   \n",
+       "98           98      m   20        yes          pfizer           yes   \n",
+       "100         100      f   21        yes          pfizer           yes   \n",
+       "\n",
+       "    which ones: (Select all that apply)  \n",
+       "0             headeche, fever, arm pain  \n",
+       "1                    headache, arm pain  \n",
+       "3                             arm pain   \n",
+       "4                    headache, arm pain  \n",
+       "5                    headache, arm pain  \n",
+       "..                                  ...  \n",
+       "93                                  NaN  \n",
+       "95                                  NaN  \n",
+       "97                            arm pain   \n",
+       "98                            tiredness  \n",
+       "100                  headache, arm pain  \n",
+       "\n",
+       "[71 rows x 7 columns]"
+      ]
+     },
+     "execution_count": 65,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[df[\"which ones: (Select all that apply)\"]!= \"none\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 71,
+   "id": "96a15d72",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>respondent</th>\n",
+       "      <th>Gender</th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Vaccineted?</th>\n",
+       "      <th>if yes, which?</th>\n",
+       "      <th>Side effects?</th>\n",
+       "      <th>which ones: (Select all that apply)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>2</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>3</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>4</td>\n",
+       "      <td>f</td>\n",
+       "      <td>49</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>9</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain, tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>10</td>\n",
+       "      <td>f</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>12</td>\n",
+       "      <td>f</td>\n",
+       "      <td>18</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>17</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>21</th>\n",
+       "      <td>21</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain, tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>27</th>\n",
+       "      <td>27</td>\n",
+       "      <td>m</td>\n",
+       "      <td>19</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain, tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>28</th>\n",
+       "      <td>28</td>\n",
+       "      <td>f</td>\n",
+       "      <td>23</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>29</th>\n",
+       "      <td>29</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>headache, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>33</th>\n",
+       "      <td>33</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain, tiredness, nausea</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>34</th>\n",
+       "      <td>34</td>\n",
+       "      <td>f</td>\n",
+       "      <td>65</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>35</th>\n",
+       "      <td>35</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>39</th>\n",
+       "      <td>39</td>\n",
+       "      <td>f</td>\n",
+       "      <td>22</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>41</th>\n",
+       "      <td>41</td>\n",
+       "      <td>m</td>\n",
+       "      <td>25</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>43</th>\n",
+       "      <td>43</td>\n",
+       "      <td>f</td>\n",
+       "      <td>22</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>52</th>\n",
+       "      <td>52</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>53</th>\n",
+       "      <td>53</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>58</th>\n",
+       "      <td>58</td>\n",
+       "      <td>f</td>\n",
+       "      <td>19</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>59</th>\n",
+       "      <td>59</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>62</th>\n",
+       "      <td>62</td>\n",
+       "      <td>m</td>\n",
+       "      <td>19</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>65</th>\n",
+       "      <td>65</td>\n",
+       "      <td>m</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>66</th>\n",
+       "      <td>66</td>\n",
+       "      <td>m</td>\n",
+       "      <td>18</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain, tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>68</th>\n",
+       "      <td>68</td>\n",
+       "      <td>m</td>\n",
+       "      <td>18</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>71</th>\n",
+       "      <td>71</td>\n",
+       "      <td>m</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>72</th>\n",
+       "      <td>72</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75</th>\n",
+       "      <td>75</td>\n",
+       "      <td>f</td>\n",
+       "      <td>18</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>81</th>\n",
+       "      <td>81</td>\n",
+       "      <td>f</td>\n",
+       "      <td>21</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>82</th>\n",
+       "      <td>82</td>\n",
+       "      <td>m</td>\n",
+       "      <td>22</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>86</th>\n",
+       "      <td>86</td>\n",
+       "      <td>m</td>\n",
+       "      <td>19</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>89</th>\n",
+       "      <td>89</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>fever, tiredness</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>90</th>\n",
+       "      <td>90</td>\n",
+       "      <td>f</td>\n",
+       "      <td>18</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>headeche, fever, arm pain</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>94</th>\n",
+       "      <td>94</td>\n",
+       "      <td>m</td>\n",
+       "      <td>20</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>no</td>\n",
+       "      <td>none</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>97</td>\n",
+       "      <td>m</td>\n",
+       "      <td>22</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>moderna</td>\n",
+       "      <td>yes</td>\n",
+       "      <td>arm pain</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    respondent Gender  Age Vaccineted? if yes, which? Side effects?  \\\n",
+       "0            0      f   20        yes         moderna           yes   \n",
+       "2            2      f   20        yes         moderna            no   \n",
+       "3            3      f   20        yes         moderna           yes   \n",
+       "4            4      f   49        yes         moderna           yes   \n",
+       "9            9      f   21        yes         moderna           yes   \n",
+       "10          10      f   20        yes         moderna           yes   \n",
+       "12          12      f   18        yes         moderna           yes   \n",
+       "17          17      m   20        yes         moderna           yes   \n",
+       "21          21      f   21        yes         moderna           yes   \n",
+       "27          27      m   19        yes         moderna           yes   \n",
+       "28          28      f   23        yes         moderna            no   \n",
+       "29          29      m   20        yes         moderna            no   \n",
+       "33          33      f   21        yes         moderna           yes   \n",
+       "34          34      f   65        yes         moderna            no   \n",
+       "35          35      m   20        yes         moderna            no   \n",
+       "39          39      f   22        yes         moderna            no   \n",
+       "41          41      m   25        yes         moderna            no   \n",
+       "43          43      f   22        yes         moderna           yes   \n",
+       "52          52      m   20        yes         moderna            no   \n",
+       "53          53      f   21        yes         moderna           yes   \n",
+       "58          58      f   19        yes         moderna           yes   \n",
+       "59          59      m   20        yes         moderna           yes   \n",
+       "62          62      m   19        yes         moderna           yes   \n",
+       "65          65      m   21        yes         moderna           yes   \n",
+       "66          66      m   18        yes         moderna           yes   \n",
+       "68          68      m   18        yes         moderna            no   \n",
+       "71          71      m   21        yes         moderna            no   \n",
+       "72          72      m   20        yes         moderna           yes   \n",
+       "75          75      f   18        yes         moderna           yes   \n",
+       "81          81      f   21        yes         moderna           yes   \n",
+       "82          82      m   22        yes         moderna           yes   \n",
+       "86          86      m   19        yes         moderna           yes   \n",
+       "89          89      m   20        yes         moderna           yes   \n",
+       "90          90      f   18        yes         moderna           yes   \n",
+       "94          94      m   20        yes         moderna            no   \n",
+       "97          97      m   22        yes         moderna           yes   \n",
+       "\n",
+       "             which ones: (Select all that apply)  \n",
+       "0                      headeche, fever, arm pain  \n",
+       "2                                           none  \n",
+       "3                                      arm pain   \n",
+       "4                             headache, arm pain  \n",
+       "9           headeche, fever, arm pain, tiredness  \n",
+       "10                     headeche, fever, arm pain  \n",
+       "12                                      headache  \n",
+       "17                            headache, arm pain  \n",
+       "21                           arm pain, tiredness  \n",
+       "27          headeche, fever, arm pain, tiredness  \n",
+       "28                                          none  \n",
+       "29                            headache, arm pain  \n",
+       "33  headeche, fever, arm pain, tiredness, nausea  \n",
+       "34                                          none  \n",
+       "35                                          none  \n",
+       "39                                          none  \n",
+       "41                                          none  \n",
+       "43                     headeche, fever, arm pain  \n",
+       "52                                          none  \n",
+       "53                     headeche, fever, arm pain  \n",
+       "58                                     arm pain   \n",
+       "59                     headeche, fever, arm pain  \n",
+       "62                                     arm pain   \n",
+       "65                                     arm pain   \n",
+       "66                           arm pain, tiredness  \n",
+       "68                                          none  \n",
+       "71                                          none  \n",
+       "72                     headeche, fever, arm pain  \n",
+       "75                                     tiredness  \n",
+       "81                                     arm pain   \n",
+       "82                                     arm pain   \n",
+       "86                                     arm pain   \n",
+       "89                              fever, tiredness  \n",
+       "90                     headeche, fever, arm pain  \n",
+       "94                                          none  \n",
+       "97                                     arm pain   "
+      ]
+     },
+     "execution_count": 71,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[df[\"if yes, which?\"]== \"moderna\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "aef2c485",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "129c674a",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
