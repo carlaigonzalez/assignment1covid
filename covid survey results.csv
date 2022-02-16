@@ -1,0 +1,102 @@
+﻿respondent,Gender,Age,Vaccineted?,"if yes, which?",Side effects?,which ones: (Select all that apply)
+0,f,20,yes ,moderna,yes,"headeche, fever, arm pain"
+1,m,24,yes ,pfizer,yes,"headache, arm pain"
+2,f,20,yes ,moderna ,no,none
+3,f,20,yes ,moderna,yes,arm pain 
+4,f,49,yes ,moderna,yes,"headache, arm pain"
+5,m,17,yes ,pfizer,yes,"headache, arm pain"
+6,m,20,yes ,pfizer,no,none
+7,f,20,yes ,J&J,yes,"headeche, fever, arm pain, tiredness"
+8,m,20,yes ,pfizer,yes,"arm pain, tiredness"
+9,f,21,yes ,moderna,yes,"headeche, fever, arm pain, tiredness"
+10,f,20,yes ,moderna,yes,"headeche, fever, arm pain"
+11,f,19,yes ,J&J,yes,arm pain 
+12,f,18,yes ,moderna,yes,headache
+13,m,20,yes ,J&J,yes,"headache, arm pain"
+14,m,50,yes ,J&J,no,none
+15,m,28,no,n/a,n/a,n/a
+16,f,27,yes ,pfizer,no,none
+17,m,20,yes ,moderna,yes,"headache, arm pain"
+18,f,19,yes ,pfizer,yes,arm pain 
+19,m,21,yes ,pfizer,no,none
+20,m,22,no,n/a,n/a,n/a
+21,f,21,yes ,moderna,yes,"arm pain, tiredness"
+22,m,20,yes ,J&J,yes,"headeche, fever, arm pain"
+23,m,20,yes ,J&J,no,arm pain 
+24,f,21,no,n/a,n/a,n/a
+25,f,22,yes ,pfizer,yes,"arm pain, tiredness"
+26,f,18,yes ,pfizer,yes,arm pain 
+27,m,19,yes ,moderna,yes,"headeche, fever, arm pain, tiredness"
+28,f,23,yes ,moderna,no,none
+29,m,20,yes ,moderna,no,"headache, arm pain"
+30,f,15,yes ,pfizer,yes,arm pain 
+31,m,19,yes ,J&J,no,none
+32,m,20,yes ,J&J,yes,"fever, arm pain"
+33,f,21,yes ,moderna,yes,"headeche, fever, arm pain, tiredness, nausea"
+34,f,65,yes ,moderna,no,none
+35,m,20,yes ,moderna,no,none
+36,f,21,no,n/a,n/a,n/a
+37,m,20,yes ,pfizer,yes,"headache, arm pain"
+38,m,19,yes ,pfizer,no,none
+39,f,22,yes ,moderna,no,none
+40,f,21,no,n/a,n/a,n/a
+41,m,25,yes ,moderna,no,none
+42,f,20,no,n/a,n/a,n/a
+43,f,22,yes ,moderna,yes,"headeche, fever, arm pain"
+44,m,23,yes ,J&J,yes,"fever, chills"
+45,m,19,yes ,pfizer,yes,arm pain 
+46,f,19,yes ,AstraZeneca,no,none
+47,f,17,yes ,pfizer,no,none
+48,f,20,yes ,J&J,yes,arm pain 
+49,m,21,yes ,J&J,no,none
+50,m,20,yes ,pfizer,yes,"fever, arm pain"
+51,f,20,yes ,pfizer,no,none
+52,m,20,yes ,moderna,no,none
+53,f,21,yes ,moderna,yes,"headeche, fever, arm pain"
+54,m,22,yes ,pfizer,yes,headache
+55,f,45 years,no,n/a,n/a,n/a
+56,m,47,no,n/a,n/a,n/a
+57,f,29,yes ,pfizer,yes,"arm pain, tiredness"
+58,f,19,yes ,moderna,yes,arm pain 
+59,m,20,yes ,moderna,yes,"headeche, fever, arm pain"
+60,f,21,yes ,J&J,no,none
+61,m,22,yes ,J&J,yes,headache
+62,m,19,yes ,moderna,yes,arm pain 
+63,m,20,yes ,pfizer,no,none
+64,f,21,no,n/a,n/a,n/a
+65,m,21,yes ,moderna,yes,arm pain 
+66,m,18,yes ,moderna,yes,"arm pain, tiredness"
+67,f,20,yes ,pfizer,no,none
+68,m,18,yes ,moderna,no,none
+69,f,23,yes ,J&J,yes,tiredness
+70,m,22,yes ,pfizer,no,none
+71,m,21,yes ,moderna,no,none
+72,m,20,yes ,moderna,yes,"headeche, fever, arm pain"
+73,f,17,yes ,pfizer,yes,"headache, arm pain"
+74,f,18,yes ,pfizer,yes,headache
+75,f,18,yes ,moderna,yes,tiredness
+76,m,20,yes ,J&J,no,none
+77,m,21,no,n/a,n/a,n/a
+78,f,22,no,n/a,n/a,n/a
+79,m,20,yes ,J&J,yes,"arm pain, tiredness"
+80,f,20,yes ,pfizer,no,none
+81,f,21,yes ,moderna,yes,arm pain 
+82,m,22,yes ,moderna,yes,arm pain 
+83,m,21,yes ,J&J,no,none
+84,m,20,no,n/a,n/a,n/a
+85,f,24,yes ,pfizer,yes,arm pain 
+86,m,19,yes ,moderna,yes,arm pain 
+87,f,25,yes ,pfizer,yes,headache
+88,f,21,no,n/a,n/a,n/a
+89,m,20,yes ,moderna,yes,"fever, tiredness"
+90,f,18,yes ,moderna,yes,"headeche, fever, arm pain"
+91,m,18,yes ,J&J,yes,"fever, arm pain"
+92,f,17,yes ,pfizer,no,none
+93,f,21,no,n/a,n/a,n/a
+94,m,20,yes ,moderna,no,none
+95,f,20,no,n/a,n/a,n/a
+96,m,21,yes ,J&J,no,none
+97,m,22,yes ,moderna,yes,arm pain 
+98,m,20,yes ,pfizer,yes,tiredness
+99,f,19,yes ,pfizer,no,none
+100,f,21,yes ,pfizer,yes,"headache, arm pain"
